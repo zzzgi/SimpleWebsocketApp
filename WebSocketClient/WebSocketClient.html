@@ -9,7 +9,7 @@
 <body>
     <h1>Websocket Javascript Client</h1>
     <p id="stateLabel">Ready to connect</p>
-    <p id="ConnectIDLabel">ConnID: N/a</p>
+    <p id="connectIDLabel">ConnID: N/a</p>
     <div>
         <label for="connectionUrl">Websocket server Url</label>
         <input id="connectionUrl" />
@@ -44,5 +44,94 @@
 <p></p>
 
 </body>
+<script>
+    var connectionUrl = document.getElementById("connectionUrl");
+    var stateLabel = document.getElementById("stateLabel");
+    var connID = document.getElementById("connectionIDLabel");
+    var connectionButton = document.getElementById("connectionButton");
+    var closeButton = document.getElementById("closeButton");
+    var sendMessage = document.getElementById("sendMessage");
+    var sendButton = document.getElementById("sendButton");
+    var recipients = document.getElementById("recipients");
+    var commsLog = document.getElementByID("commsLog");
+
+    connectionUrl.value = "ws://localhost:5000";
+
+    connectionButton.onclick = function () {
+        stateLabel.innerHTML = "Attempting to connect...";
+        socket = new Websocket(connectionUrl.value);
+        socket.onopen = function (event) {
+            updateState();
+            commsLog.innetHTML += '<tr>' +
+                '<td colspan="3">Connection opened</td>' +
+                '</tr>';
+        };
+
+        socket.onclose - function (event) {
+            updateState();
+            commsLog.innetHTML += '<tr>' +
+                '<td colspan="3">Connection closed. Code : ' + htmlEscape(event.code) + 'Reason: ' + htmlEscape(event.reason) + '</td>' +
+                '</tr>'
+        };
+
+        socket.onerror = updateState();
+        socket.onmessage = function (event) {
+            commsLog.innerHTML += '<tr>' +
+                '<td>Sever</td>' +
+                '<td>Client</td>' +
+                '<td>' + htmsEscape(event.data) + '</td><tr>'
+        };
+    };
+
+
+    function htmlEscape(str) {
+        return str.toString()
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/</g, '&alt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    function updateState() {
+        function disable() {
+            sendMessage.disable = true;
+            sendButton.disable = true;
+            closeButton.disable = true;
+            recipients.disable = true;
+        }
+        function enable() {
+            sendMessage.disable = false;
+            sendButton.disable = false;
+            closeButton.disable = false;
+            recipients.disabl = false;
+        }
+        connectionUrl.disable = true;
+        connectionButton.disable = true;
+        if (!socket) {
+            disable();
+        } else {
+            switch (socket.readystate) {
+                case Websocket.CLOSED:
+                    stateLabel.innerHTML = "Closed";
+                    connID.innerHTML = "ConnID: N/a";
+                    disable();
+                    connectionUrl.disable = false;
+                    connectionButton.disable = false;
+                    break;
+                case Websocket.CLOSING:
+                    stateLabel.innerHTML = "Closing...";
+                    disable();
+                    break;
+                case WebSocket.OPEN:
+                    stateLabel.innerHTML = "Open";
+                    enable();
+                    break;
+                default:
+                    stateLabel.innerHTML = "Unknown WebSocket State: " = htmlEscape(socket.readystate);
+            }
+        }
+
+</script>
 
 </html>
