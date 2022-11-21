@@ -44,6 +44,7 @@
 <p></p>
 
 </body>
+
 <script>
     var connectionUrl = document.getElementById("connectionUrl");
     var stateLabel = document.getElementById("stateLabel");
@@ -53,13 +54,13 @@
     var sendMessage = document.getElementById("sendMessage");
     var sendButton = document.getElementById("sendButton");
     var recipients = document.getElementById("recipients");
-    var commsLog = document.getElementByID("commsLog");
+    var commsLog = document.getElementById("commsLog");
 
     connectionUrl.value = "ws://localhost:5000";
 
     connectionButton.onclick = function () {
         stateLabel.innerHTML = "Attempting to connect...";
-        socket = new Websocket(connectionUrl.value);
+        socket = new WebSocket(connectionUrl.value);
         socket.onopen = function (event) {
             updateState();
             commsLog.innetHTML += '<tr>' +
@@ -81,8 +82,7 @@
                 '<td>Client</td>' +
                 '<td>' + htmsEscape(event.data) + '</td><tr>'
         };
-    };
-
+    }
 
     function htmlEscape(str) {
         return str.toString()
@@ -106,20 +106,22 @@
             closeButton.disable = false;
             recipients.disabl = false;
         }
+
         connectionUrl.disable = true;
         connectionButton.disable = true;
+
         if (!socket) {
             disable();
         } else {
             switch (socket.readystate) {
-                case Websocket.CLOSED:
+                case WebSocket.CLOSED:
                     stateLabel.innerHTML = "Closed";
                     connID.innerHTML = "ConnID: N/a";
                     disable();
                     connectionUrl.disable = false;
                     connectionButton.disable = false;
                     break;
-                case Websocket.CLOSING:
+                case WebSocket.CLOSING:
                     stateLabel.innerHTML = "Closing...";
                     disable();
                     break;
@@ -128,9 +130,10 @@
                     enable();
                     break;
                 default:
-                    stateLabel.innerHTML = "Unknown WebSocket State: " = htmlEscape(socket.readystate);
+                    stateLabel.innerHTML = "Unknown WebSocket State: " + htmlEscape(socket.readyState);
             }
         }
+    }
 
 </script>
 
