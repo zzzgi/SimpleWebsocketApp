@@ -56,7 +56,7 @@
     var recipients = document.getElementById("recipients");
     var commsLog = document.getElementById("commsLog");
 
-    connectionUrl.value = "ws://localhost:5000";
+    connectionUrl.value = "ws://localhost:5114";
 
     connectionButton.onclick = function () {
         stateLabel.innerHTML = "Attempting to connect...";
@@ -80,7 +80,7 @@
             commsLog.innerHTML += '<tr>' +
                 '<td>Sever</td>' +
                 '<td>Client</td>' +
-                '<td>' + htmsEscape(event.data) + '</td><tr>'
+                '<td>' + htmsEscape(event.data) + '</td></tr>'
         };
     }
 
@@ -113,7 +113,7 @@
         if (!socket) {
             disable();
         } else {
-            switch (socket.readystate) {
+            switch (socket.readyState) {
                 case WebSocket.CLOSED:
                     stateLabel.innerHTML = "Closed";
                     connID.innerHTML = "ConnID: N/a";
